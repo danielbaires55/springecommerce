@@ -1,4 +1,3 @@
-// springecommerce/backend/CartService.java
 
 package springecommerce.backend;
 
@@ -17,8 +16,6 @@ public class CartService {
     @Autowired
     private UserService userService;             // Per aggiornare il saldo dell'utente
 
-    // Mappa che associa l'ID dell'utente al suo carrello (login -> Map<Product ID, CartItem>)
-    // In un'applicazione reale, useremmo le sessioni HTTP o un meccanismo di stato più robusto.
     private final Map<String, Map<Long, CartItem>> userCarts = new ConcurrentHashMap<>();
 
     // Ottiene il carrello per un dato utente (creandone uno nuovo se non esiste)
@@ -88,7 +85,7 @@ public class CartService {
 
         // Decurtazione del saldo
         user.setBalance(user.getBalance() - totalCost);
-        userService.updateUser(user); // Salva l'utente con il nuovo saldo (password già hashata)
+        userService.updateUser(user); 
 
         // Svuota il carrello dopo l'acquisto
         userCarts.remove(userLogin);

@@ -1,4 +1,3 @@
-// springecommerce/backend/UserService.java
 
 package springecommerce.backend;
 
@@ -51,12 +50,7 @@ public class UserService {
         return userRepository.findByLogin(login);
     }
 
-    // <<< NUOVO METODO: Aggiungi questo metodo per aggiornare un utente esistente
     public User updateUser(User user) {
-        // Quando chiami save() su un'entità che ha già un ID, Spring Data JPA esegue un UPDATE.
-        // Non è necessario rifare l'hash della password se l'utente esiste e la password non è cambiata.
-        // Se la password potesse essere cambiata da questo metodo, dovremmo gestirlo,
-        // ma per ora è solo per aggiornare il saldo.
         return userRepository.save(user);
     }
 }

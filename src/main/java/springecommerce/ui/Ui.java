@@ -1,14 +1,10 @@
-// springecommerce/ui/Ui.java
 
 package springecommerce.ui;
 
 import java.util.Scanner;
-import java.util.Map; // Importa Map
-import java.util.Collection; // Importa Collection
+import java.util.Map; 
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
 import lombok.extern.slf4j.Slf4j;
 
 import springecommerce.backend.Product;
@@ -16,8 +12,8 @@ import springecommerce.backend.ProductRepository;
 import springecommerce.backend.User;
 import springecommerce.backend.JdbcUserRepository;
 import springecommerce.backend.UserService;
-import springecommerce.backend.CartService; // <<< NUOVO: Importa CartService
-import springecommerce.backend.CartItem; // <<< NUOVO: Importa CartItem
+import springecommerce.backend.CartService; 
+import springecommerce.backend.CartItem; 
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +30,7 @@ public class Ui {
     @Autowired
     UserService userService;
 
-    @Autowired // <<< NUOVO: Inietta il CartService
+    @Autowired 
     CartService cartService;
 
     private Scanner s = new Scanner(System.in);
@@ -55,7 +51,7 @@ public class Ui {
         return value;
     }
 
-    private double readDouble(String prompt) { // Metodo per leggere double (es. per prezzi, saldi)
+    private double readDouble(String prompt) {
         System.out.print(prompt + ":");
         while (!s.hasNextDouble()) {
             System.out.println("Input non valido. Inserisci un numero decimale (usa la virgola per i decimali se il tuo locale lo richiede, o il punto).");
@@ -63,7 +59,7 @@ public class Ui {
             System.out.print(prompt + ":");
         }
         double value = s.nextDouble();
-        s.nextLine(); // Consuma il resto della riga
+        s.nextLine(); 
         return value;
     }
 
@@ -80,24 +76,24 @@ public class Ui {
 
     // Aggiungi le nuove costanti per le opzioni del menu
     public static final int LOGOUT = 0, PRINT_PRODUCTS = 1, ADD_PRODUCT = 2,
-                            ADD_TO_CART = 3, VIEW_CART = 4, CHECKOUT = 5; // <<< NUOVE OPZIONI
+                            ADD_TO_CART = 3, VIEW_CART = 4, CHECKOUT = 5;
     User u = null;
 
     private int menu() {
         // Recupera il saldo più recente dell'utente loggato
         if (u != null) {
-            u = userService.findByLogin(u.getLogin()).orElse(u); // Aggiorna l'oggetto 'u' con i dati più recenti dal DB
+            u = userService.findByLogin(u.getLogin()).orElse(u); 
         }
 
         String fullName = (u.getName() != null && u.getSurname() != null) ?
                            (u.getName() + " " + u.getSurname()) : u.getLogin();
-        print("\n--- Utente: " + fullName + " | Saldo: " + String.format("%.2f", u.getBalance()) + " ---"); // <<< Aggiornato per mostrare il saldo
-        return readInt("1) print products\n2) add product\n3) add to cart\n4) view cart\n5) checkout\n0) LOGOUT"); // <<< Menu aggiornato
+        print("\n--- Utente: " + fullName + " | Saldo: " + String.format("%.2f", u.getBalance()) + " ---"); 
+        return readInt("1) print products\n2) add product\n3) add to cart\n4) view cart\n5) checkout\n0) LOGOUT"); 
     }
 
     private void printProducts() {
         print("\n--- Catalogo Prodotti ---");
-        Iterable<Product> products = productRepo.findAll(); // Usa Iterable<Product> per coerenza
+        Iterable<Product> products = productRepo.findAll();
         if (!products.iterator().hasNext()) {
             print("Nessun prodotto disponibile nel catalogo.");
             return;
@@ -109,24 +105,21 @@ public class Ui {
 
     private void addProduct() {
         String name = readString("name");
-        double price = readDouble("price"); // Usa readDouble
+        double price = readDouble("price"); 
         productRepo.save(new Product(null, name, price));
         print("Prodotto aggiunto con successo!");
     }
 
-    // <<< NUOVO METODO: Aggiungi al Carrello
     private void addToCart() {
         if (u == null) {
             print("Devi essere loggato per aggiungere prodotti al carrello.");
             return;
         }
-        printProducts(); // Mostra i prodotti disponibili
+        printProducts();
         int productId = readInt("Inserisci l'ID del prodotto da aggiungere al carrello");
         int quantity = readInt("Inserisci la quantità");
 
         try {
-            // Poiché l'ID del prodotto è un Integer, ma nel servizio lo abbiamo come Long,
-            // dobbiamo castare l'Integer in Long per l'operazione.
             cartService.addProductToCart(u.getLogin(), (long) productId, quantity);
             print("Prodotto aggiunto al carrello con successo.");
         } catch (RuntimeException e) {
@@ -134,7 +127,6 @@ public class Ui {
         }
     }
 
-    // <<< NUOVO METODO: Visualizza Carrello
     private void viewCart() {
         if (u == null) {
             print("Devi essere loggato per visualizzare il carrello.");
@@ -157,13 +149,12 @@ public class Ui {
         print("Costo Totale del Carrello: " + String.format("%.2f", total));
     }
 
-    // <<< NUOVO METODO: Checkout
     private void checkout() {
         if (u == null) {
             print("Devi essere loggato per effettuare il checkout.");
             return;
         }
-        viewCart(); // Mostra il carrello prima del checkout
+        viewCart();
         String confirm = readString("Confermare l'acquisto? (s/n)");
         if (!confirm.equalsIgnoreCase("s")) {
             print("Acquisto annullato.");
@@ -174,7 +165,6 @@ public class Ui {
             boolean success = cartService.checkoutCart(u.getLogin());
             if (success) {
                 print("Acquisto completato con successo. Saldo aggiornato.");
-                // Dopo l'acquisto, aggiorna l'oggetto utente locale per riflettere il nuovo saldo
                 u = userService.findByLogin(u.getLogin()).orElse(u);
             } else {
                 print("Operazione di checkout non riuscita.");
@@ -204,13 +194,13 @@ public class Ui {
                     case ADD_PRODUCT:
                         addProduct();
                         break;
-                    case ADD_TO_CART: // <<< NUOVO CASE
+                    case ADD_TO_CART: 
                         addToCart();
                         break;
-                    case VIEW_CART: // <<< NUOVO CASE
+                    case VIEW_CART: 
                         viewCart();
                         break;
-                    case CHECKOUT: // <<< NUOVO CASE
+                    case CHECKOUT:
                         checkout();
                         break;
                     case LOGOUT:

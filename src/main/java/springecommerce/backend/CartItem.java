@@ -1,4 +1,3 @@
-// springecommerce/backend/CartItem.java
 
 package springecommerce.backend;
 
