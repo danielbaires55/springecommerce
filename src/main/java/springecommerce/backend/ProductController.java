@@ -1,4 +1,3 @@
-// springecommerce/backend/ProductController.java
 
 package springecommerce.backend;
 
@@ -14,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/products") 
 public class ProductController {
     @Autowired
-    private ProductRepository productRepository; // Inietta il tuo JpaRepository per i prodotti
+    private ProductRepository productRepository; 
     @GetMapping 
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productRepository.findAll(); 

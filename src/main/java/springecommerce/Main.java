@@ -1,4 +1,3 @@
-// springecommerce/backend/Main.java
 
 package springecommerce;
 

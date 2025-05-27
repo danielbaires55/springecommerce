@@ -1,4 +1,4 @@
-// springecommerce/backend/ProductRepository.java
+
 package springecommerce.backend;
 
 import org.springframework.data.jpa.repository.JpaRepository;

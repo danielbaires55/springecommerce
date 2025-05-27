@@ -53,7 +53,7 @@ public class CartService {
         }
 
         if (quantityToRemove <= 0 || quantityToRemove >= item.getQuantity()) {
-            cart.remove(productId); // Rimuovi l'intero articolo se la quantità da rimuovere è maggiore o uguale
+            cart.remove(productId);
         } else {
             item.setQuantity(item.getQuantity() - quantityToRemove);
             cart.put(productId, item);
